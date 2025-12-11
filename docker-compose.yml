@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  payevo_app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: payevo_app
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - PAYMENT_API_BASE_URL=${PAYMENT_API_BASE_URL}
+      - PAYMENT_API_SECRET_KEY=${PAYMENT_API_SECRET_KEY}
+      - NODE_ENV=production
+      - PORT=3000
+    

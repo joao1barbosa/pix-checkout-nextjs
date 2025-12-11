@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
+import { PixTransactionRequest } from '@/types';
 import axios from 'axios';
 
-// Variáveis de Ambiente
 const API_URL = process.env.PAYMENT_API_BASE_URL;
 const SECRET_KEY = process.env.PAYMENT_API_SECRET_KEY;
 
@@ -15,29 +15,31 @@ export async function POST(request: Request) {
     const formData = await request.json();
 
     const authString = `Basic ${Buffer.from(SECRET_KEY).toString('base64')}`;
-    
-    const requestBody = {
-        customer: {
-            name: formData.buyerName,
-            email: formData.buyerEmail,
-            phone: formData.buyerPhone,
-            document: formData.buyerDocument,
-        },
-        paymentMethod: "PIX",
-        pix: {
-            expiresInDays: 1
-        },
-        items: [
-            {
-                title: formData.description,
-                unitPrice: formData.amountInCents,
-                quantity: 1,
-                externalRef: formData.externalRef,
-            }
-        ],
-        amount: formData.amountInCents,
-        description: formData.description,
-        };
+    const requestBody: PixTransactionRequest = {
+      customer: {
+          name: formData.buyerName,
+          email: "teste@teste.com",
+          phone: "(11) 99999-9999",
+          document: {
+            type: "CPF",
+            number: formData.buyerDocument
+          },
+      },
+      paymentMethod: "PIX",
+      pix: {
+          expiresInDays: 1
+      },
+      items: [
+          {
+            title: "teste",
+            unitPrice: formData.amountInCents,
+            quantity: 1,
+            externalRef: "PRODUTO0001",
+          }
+      ],
+      amount: formData.amountInCents,
+      description: formData.description,
+    };
     
     const response = await axios.post(
       API_URL,
@@ -53,11 +55,11 @@ export async function POST(request: Request) {
     return NextResponse.json(response.data, { status: response.status });
 
   } catch (error) {
-    let errorMessage = 'Erro ao processar transação PIX.';
+    let errorMessage;
     let statusCode = 500;
 
     if (axios.isAxiosError(error) && error.response) {
-      errorMessage = error.response.data.message || errorMessage;
+      errorMessage = error || errorMessage;
       statusCode = error.response.status;
     }
 

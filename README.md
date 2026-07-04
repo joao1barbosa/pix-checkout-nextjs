@@ -1,83 +1,61 @@
-# 💸 Desafio Next.js: Criação de Transação PIX
+# 💸 PIX Checkout (Next.js)
 
-Este projeto foi desenvolvido para atender ao desafio de criar uma interface para consumir uma API de pagamentos (simulada via rota API interna), gerando uma transação PIX. A aplicação coleta dados do comprador, envia-os para o backend (middleware de autenticação) e exibe os detalhes do PIX (QR Code e Código Copia e Cola) em uma página de resultado separada, utilizando gerenciamento de estado via Context API.
+> A full-stack technical challenge: a PIX payment interface that generates a QR code and copy-paste code, keeping the payment API secret server-side through an internal middleware route.
 
-## 💻 Tecnologias Utilizadas
+## 📋 Overview
 
-| Categoria                   | Tecnologia                 | Uso Principal                                                                  |
-| :-------------------------- | :------------------------- | :----------------------------------------------------------------------------- |
-| **Framework Web**           | Next.js (v14+, App Router) | Servidor API (Middleware) e Frontend React.                                    |
-| **Linguagem**               | TypeScript                 | Tipagem segura em todo o projeto.                                              |
-| **Estilização**             | Tailwind CSS & Shadcn/ui   | Estilização rápida e componentes reutilizáveis.                                |
-| **Requisições HTTP**        | Axios                      | Cliente HTTP para fazer requisições para a API de pagamentos (via middleware). |
-| **Gerenciamento de Estado** | React Context API          | Passagem dos dados da transação entre páginas (Formulário -> Detalhes).        |
-| **Geração de QR Code**      | `qrcode.react`             | Geração dinâmica do QR Code a partir do link/código PIX retornado pela API.    |
-| **Ambiente**                | Docker / Docker Compose    | Build de produção otimizado (`standalone`) e fácil execução local.             |
+Solution to a technical challenge: an interface that consumes a payments API to create a PIX
+transaction. It collects the buyer's data, sends it to an internal API route (which acts as
+an authentication middleware), and shows the PIX details (QR code + copy-paste code) on a
+separate result page, passing state between pages via the React Context API.
 
-## 🔒 Autenticação (Basic Auth)
+## 🔗 Live Demo
 
-Para proteger a chave secreta da API de pagamentos (`Basic Auth`), o projeto utiliza uma **Rota API interna (`/api/payments`)** como _middleware_. O frontend envia os dados para esta rota, que, por sua vez, faz a requisição para a API externa, mantendo a chave secreta no lado do servidor (variáveis de ambiente).
+Deployed on Vercel: **[live demo](https://payevo-code-challenge-2.vercel.app/)**
 
-## Status do Deploy (Vercel)
+## 🚀 Tech Stack
 
-O projeto está configurado para ser implantado na Vercel.
+| Layer | Technology |
+|-------|-----------|
+| **Framework** | Next.js (v14+, App Router) — internal API middleware + React frontend |
+| **Language** | TypeScript |
+| **Styling** | Tailwind CSS, shadcn/ui |
+| **HTTP** | Axios |
+| **State** | React Context API |
+| **QR Code** | `qrcode.react` |
+| **Runtime** | Docker / Docker Compose (standalone production build) |
 
-| Ambiente     | Status    | URL de Acesso                                         |
-| :----------- | :-------- | :---------------------------------------------------- |
-| **Produção** | ✅ Online | [Deploy](https://payevo-code-challenge-2.vercel.app/) |
+## 🧠 Technical Decision — protecting the API secret
 
-## 🚀 Executando o Projeto Localmente
+The payment API uses Basic Auth. To keep the secret off the client, the app calls an
+**internal API route (`/api/payments`)** that acts as a middleware: the frontend posts to
+this route, which forwards the request to the external API server-side, so the secret key
+never leaves the server (it lives in an environment variable).
 
-O projeto é configurado para ser executado de forma eficiente, sendo a execução via Docker Compose a forma preferível, pois abstrai a instalação de dependências e configura variáveis de ambiente em tempo de execução.
+## 🔧 How to Run Locally
 
-### Pré-requisitos
-
-1.  **Node.js (v20+) & npm** (Opcional, se usar a Opção 2)
-2.  **Docker** (Recomendado)
-
-### 🔑 Configuração de Variáveis de Ambiente
-
-Copie o arquivo `.env.example`, renomei-o como `.env` e configure as credenciais.
+Copy `.env.example` to `.env` and set:
 
 ```ini
-# .env
-
-PAYMENT_API_BASE_URL="[A URL BASE DA SUA API DE PAGAMENTOS]"
-
-PAYMENT_API_SECRET_KEY="sk_sua_chave_secreta_aqui"
+PAYMENT_API_BASE_URL="<base URL of the payments API>"
+PAYMENT_API_SECRET_KEY="sk_your_secret_here"
 ```
 
-### Opção 1: Execução com Docker Compose (Recomendado)
+### Option 1 — Docker Compose (recommended)
 
-Utilize este método para construir a imagem de produção e iniciar o contêiner de forma isolada e otimizada.
+```bash
+docker compose up --build -d
+```
 
-1.  **Executar o Setup e a Aplicação:**
-    O comando abaixo irá construir a imagem Next.js (payevo), injetar as variáveis de ambiente e iniciar o contêiner.
+### Option 2 — Local
 
-    ```bash
-    docker compose up --build -d
-    ```
+```bash
+npm install && npm run dev
+```
 
-2.  **Acesso:**
-    A aplicação estará acessível em: `http://localhost:3000`
+App at `http://localhost:3000`.
 
-### Opção 2: Execução Manual com npm run dev
+## 👤 Author
 
-Use esta opção para desenvolvimento rápido e hot reloading.
-
-1.  **Instalar Dependências:**
-
-    ```bash
-    npm install
-    ```
-
-2.  **Iniciar o Servidor de Desenvolvimento:**
-
-    ```bash
-    npm run dev
-    ```
-
-3.  **Acesso:**
-    A aplicação estará acessível em: `http://localhost:3000`
-
----
+**João Barbosa** — Software Engineer (backend / platform).
+[LinkedIn](https://www.linkedin.com/in/joao1barbosa/) · [GitHub](https://github.com/joao1barbosa)
